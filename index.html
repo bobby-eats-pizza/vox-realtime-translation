@@ -2,41 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Vox four-way translation workspace" />
-  <title>Vox — One thought, four languages</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f2efe6" />
+  <meta name="description" content="Vox is a focused real-time translation desk for Chinese, English, Spanish, and French." />
+  <meta property="og:title" content="Vox — Real-time translation, beautifully focused" />
+  <meta property="og:description" content="Four independent translation workspaces. Four languages. One calm interface." />
+  <meta property="og:type" content="website" />
+  <title>Vox — Real-time translation, beautifully focused</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23194f39'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='38' font-family='Georgia' font-style='italic' fill='%23f2efe6'%3EV%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="grain"></div>
-  <header>
-    <a class="brand" href="#"><span>V</span> VOX</a>
-    <p>Four-way translation workspace</p>
-    <button class="theme" aria-label="Toggle dark mode">☼</button>
+  <a class="skip-link" href="#desk">Skip to translation desk</a>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Vox home"><span>V</span> VOX</a>
+    <p>Real-time translation desk</p>
+    <div class="header-actions">
+      <a class="github-link" href="https://github.com/bobby-eats-pizza/vox-realtime-translation" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
+      <button class="theme" aria-label="Switch to dark mode" title="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+    </div>
   </header>
-
-  <main>
-    <section class="hero">
-      <p class="eyebrow">One thought · four languages</p>
-      <h1>Let every word<br><em>travel further.</em></h1>
-      <p class="dek">Four independent spaces for four different conversations. Choose any language pair, write, and translate without interrupting the others.</p>
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy"><p class="eyebrow"><span></span> Language without the clutter</p><h1 id="hero-title">Let every word<br><em>travel further.</em></h1></div>
+      <div class="hero-aside"><p>Four independent spaces for four different conversations. Choose a pair, begin typing, and watch your words cross borders.</p><div class="language-row" aria-label="Supported languages"><span>中文</span><span>English</span><span>Español</span><span>Français</span></div></div>
     </section>
-
-    <section class="results" aria-labelledby="resultsTitle">
+    <section class="results" id="desk" aria-labelledby="results-title">
       <div class="results-heading">
-        <div><p class="eyebrow">Translation desk</p><h2 id="resultsTitle">Four windows. Any direction.</h2></div>
-        <span class="shortcut">Live translation</span>
+        <div><p class="eyebrow">Translation desk</p><h2 id="results-title">Four windows. Any direction.</h2></div>
+        <div class="desk-tools"><span class="live-badge"><i></i> Live translation</span><button class="clear-all" type="button">Clear all</button></div>
       </div>
       <div class="translation-grid" aria-label="Four independent translators"></div>
-      <p class="api-note">Translation uses your browser’s on-device model when available, with an automatic cloud fallback for wider browser support. Automated translation can miss nuance.</p>
+      <div class="privacy-note"><span class="privacy-icon">◇</span><p><strong>On-device when possible.</strong> Vox first uses your browser’s local translation model, then falls back to a cloud translation service for broader support. Automated translations may miss nuance.</p></div>
     </section>
   </main>
-
-  <footer><span>Made for words that matter.</span><span>CHN · ENG · ESP · FRA</span></footer>
-  <div class="toast" role="status">Copied to clipboard</div>
+  <footer><div><span class="footer-mark">V</span><span>Made for words that matter.</span></div><span>CHN · ENG · ESP · FRA</span><a href="#top">Back to top ↑</a></footer>
+  <div class="toast" role="status" aria-live="polite">Copied to clipboard</div>
   <script src="script.js"></script>
 </body>
 </html>
