@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vox four-way translation workspace" />
+  <title>Vox — One thought, four languages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header>
+    <a class="brand" href="#"><span>V</span> VOX</a>
+    <p>Four-way translation workspace</p>
+    <button class="theme" aria-label="Toggle dark mode">☼</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">One thought · four languages</p>
+      <h1>Let every word<br><em>travel further.</em></h1>
+      <p class="dek">Four independent spaces for four different conversations. Choose any language pair, write, and translate without interrupting the others.</p>
+    </section>
+
+    <section class="results" aria-labelledby="resultsTitle">
+      <div class="results-heading">
+        <div><p class="eyebrow">Translation desk</p><h2 id="resultsTitle">Four windows. Any direction.</h2></div>
+        <span class="shortcut">Live translation</span>
+      </div>
+      <div class="translation-grid" aria-label="Four independent translators"></div>
+      <p class="api-note">Translation uses your browser’s on-device model when available, with an automatic cloud fallback for wider browser support. Automated translation can miss nuance.</p>
+    </section>
+  </main>
+
+  <footer><span>Made for words that matter.</span><span>CHN · ENG · ESP · FRA</span></footer>
+  <div class="toast" role="status">Copied to clipboard</div>
+  <script src="script.js"></script>
+</body>
+</html>
