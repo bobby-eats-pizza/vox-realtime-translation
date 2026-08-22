@@ -4,7 +4,7 @@
 
 ### Real-time translation, beautifully focused.
 
-Four independent translation workspaces for Chinese, English, Spanish, and French — in one calm, editorial interface.
+Four independent tabbed translation workspaces for Chinese, English, Spanish, and French — in one calm, editorial interface.
 
 [Try the demo](https://bobby-eats-pizza.github.io/vox-realtime-translation/) · [Report a bug](https://github.com/bobby-eats-pizza/vox-realtime-translation/issues) · [Request a feature](https://github.com/bobby-eats-pizza/vox-realtime-translation/issues)
 
@@ -14,9 +14,9 @@ Four independent translation workspaces for Chinese, English, Spanish, and Frenc
 
 ## Why Vox?
 
-Most translation tools optimize for one quick conversion. Vox is designed for multilingual work: four large, independent language-to-language windows that stay ready for different conversations, drafts, or comparisons.
+Most translation tools optimize for one quick conversion. Vox is designed for multilingual work: four independent language-to-language tabs that keep different conversations, drafts, or comparisons ready without cluttering the screen.
 
-- **Four independent desks** — each window has its own source, target, input, and result.
+- **Four independent tabs** — each workspace preserves its own source, target, input, and result.
 - **Live translation** — results update shortly after you stop typing.
 - **Privacy-minded** — uses Chrome's on-device Translator API when available.
 - **Broad fallback** — gracefully uses cloud translation when a local model is unavailable.
