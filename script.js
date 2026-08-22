@@ -18,7 +18,7 @@ const validTargets = new Set(Object.keys(languages));
 const starters = defaultWorkspaces.map((defaults, index) => ({
   from: validSources.has(initialParams.get(`from${index + 1}`)) ? initialParams.get(`from${index + 1}`) : defaults.from,
   to: validTargets.has(initialParams.get(`to${index + 1}`)) ? initialParams.get(`to${index + 1}`) : defaults.to,
-  text: (initialParams.get(`text${index + 1}`) || '').slice(0, 500)
+  text: (initialParams.get(`text${index + 1}`) || '').slice(0, 1000)
 }));
 const initialTab = Math.min(3, Math.max(0, Number(initialParams.get('tab')) || 0));
 
@@ -56,7 +56,7 @@ function createWindow(config, index) {
       </div>
     </div>
     <div class="window-body">
-      <div class="input-side"><span class="field-label">Original</span><textarea maxlength="500" aria-label="Workspace ${index + 1} text input" placeholder="Start writing…" spellcheck="true">${escapeHtml(config.text)}</textarea><div class="side-foot"><span class="count">${config.text.length} / 500</span><div class="input-actions"><span class="live-label">Live</span><button class="icon-button speak-input" type="button" aria-label="Listen to original text" title="Listen to original" ${config.text ? '' : 'disabled'}><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button></div></div></div>
+      <div class="input-side"><span class="field-label">Original</span><textarea maxlength="1000" aria-label="Workspace ${index + 1} text input" placeholder="Start writing…" spellcheck="true">${escapeHtml(config.text)}</textarea><div class="side-foot"><span class="count">${config.text.length} / 1000</span><div class="input-actions"><span class="live-label">Live</span><button class="icon-button speak-input" type="button" aria-label="Listen to original text" title="Listen to original" ${config.text ? '' : 'disabled'}><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button></div></div></div>
       <div class="output-side"><span class="field-label">Translation</span><div class="output placeholder" aria-live="polite">Your translation will appear here.</div><div class="side-foot"><span class="window-status">Ready</span><div class="card-actions"><button class="icon-button speak-output" type="button" aria-label="Listen to translation" title="Listen to translation" disabled><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button><button class="icon-button copy" type="button" aria-label="Copy translation" title="Copy" disabled><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="1"/><path d="M16 8V5H5v11h3"/></svg></button></div></div></div>
     </div>
   </article>`;
@@ -248,7 +248,7 @@ function clearTranslator(translator) {
   const textarea = translator.querySelector('textarea');
   textarea.value = '';
   resizeInput(textarea);
-  translator.querySelector('.count').textContent = '0 / 500';
+  translator.querySelector('.count').textContent = '0 / 1000';
   translator.querySelector('.speak-input').disabled = true;
   requestVersions.set(translator, (requestVersions.get(translator) || 0) + 1);
   showEmpty(translator);
@@ -289,8 +289,9 @@ grid.addEventListener('click', async event => {
     updateTabLabel(translator);
     const output = translator.querySelector('.output');
     if (![...output.classList].some(name => ['placeholder', 'error', 'loading'].includes(name))) {
-      translator.querySelector('textarea').value = output.textContent;
-      translator.querySelector('.count').textContent = `${output.textContent.length} / 500`;
+      const swappedText = output.textContent.slice(0, 1000);
+      translator.querySelector('textarea').value = swappedText;
+      translator.querySelector('.count').textContent = `${swappedText.length} / 1000`;
       resizeInput(translator.querySelector('textarea'));
     }
     showEmpty(translator);
@@ -320,7 +321,7 @@ grid.addEventListener('click', async event => {
 grid.addEventListener('input', event => {
   if (!event.target.matches('textarea')) return;
   const translator = event.target.closest('.translator-window');
-  translator.querySelector('.count').textContent = `${event.target.value.length} / 500`;
+  translator.querySelector('.count').textContent = `${event.target.value.length} / 1000`;
   translator.querySelector('.speak-input').disabled = !event.target.value.trim();
   resizeInput(event.target);
   scheduleUrlSync();
