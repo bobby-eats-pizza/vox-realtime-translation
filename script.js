@@ -238,8 +238,16 @@ function showEmpty(translator) {
   setState(translator, 'Your translation will appear here.', 'placeholder', 'Ready');
 }
 
+function resizeInput(textarea) {
+  textarea.style.height = 'auto';
+  const minimumHeight = Number.parseFloat(getComputedStyle(textarea).minHeight) || 270;
+  textarea.style.height = `${Math.max(minimumHeight, textarea.scrollHeight)}px`;
+}
+
 function clearTranslator(translator) {
-  translator.querySelector('textarea').value = '';
+  const textarea = translator.querySelector('textarea');
+  textarea.value = '';
+  resizeInput(textarea);
   translator.querySelector('.count').textContent = '0 / 500';
   translator.querySelector('.speak-input').disabled = true;
   requestVersions.set(translator, (requestVersions.get(translator) || 0) + 1);
@@ -283,6 +291,7 @@ grid.addEventListener('click', async event => {
     if (![...output.classList].some(name => ['placeholder', 'error', 'loading'].includes(name))) {
       translator.querySelector('textarea').value = output.textContent;
       translator.querySelector('.count').textContent = `${output.textContent.length} / 500`;
+      resizeInput(translator.querySelector('textarea'));
     }
     showEmpty(translator);
     queueTranslation(translator, 0);
@@ -313,6 +322,7 @@ grid.addEventListener('input', event => {
   const translator = event.target.closest('.translator-window');
   translator.querySelector('.count').textContent = `${event.target.value.length} / 500`;
   translator.querySelector('.speak-input').disabled = !event.target.value.trim();
+  resizeInput(event.target);
   scheduleUrlSync();
   if (!event.target.value.trim()) showEmpty(translator);
   else queueTranslation(translator);
@@ -379,5 +389,8 @@ applyTheme(savedTheme || preferredTheme);
 grid.innerHTML = createTabs() + `<div class="tab-panels">${starters.map(createWindow).join('')}</div>`;
 activateTab(initialTab, false);
 grid.querySelectorAll('.translator-window').forEach((translator, index) => {
+  resizeInput(translator.querySelector('textarea'));
   if (starters[index].text) queueTranslation(translator, 300 + index * 120);
 });
+if (document.fonts?.ready) document.fonts.ready.then(() => grid.querySelectorAll('textarea').forEach(resizeInput));
+window.addEventListener('resize', () => grid.querySelectorAll('textarea').forEach(resizeInput));

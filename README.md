@@ -21,6 +21,7 @@ Most translation tools optimize for one quick conversion. Vox is designed for mu
 - **Automatic language detection** — identify Chinese, English, Spanish, or French as you type.
 - **Visible language controls** — switch languages directly without opening dropdown menus.
 - **Shareable persistent URLs** — refresh or share a link without losing tab, language-pair, or input state.
+- **Content-aware editors** — translation panels expand naturally for longer passages.
 - **Privacy-minded** — uses Chrome's on-device Translator API when available.
 - **Broad fallback** — gracefully uses cloud translation when a local model is unavailable.
 - **Useful details** — language swapping, input and translation speech playback, copy, character counts, and dark mode.

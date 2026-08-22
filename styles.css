@@ -92,7 +92,7 @@ h2 { margin: 0; font: 500 clamp(32px, 3.7vw, 46px)/1 Newsreader; letter-spacing:
 .input-side { border-right: 1px solid var(--line); }
 .output-side { background: color-mix(in srgb, var(--green) 2%, transparent); }
 .field-label { margin-bottom: 12px; color: var(--muted); font: 500 7px DM Mono; text-transform: uppercase; letter-spacing: .14em; }
-.window-body textarea { width: 100%; min-height: 270px; flex: 1; resize: none; border: 0; outline: 0; background: transparent; font: 500 clamp(24px, 2.4vw, 32px)/1.43 Newsreader; }
+.window-body textarea { width: 100%; min-height: 270px; flex: 0 0 auto; overflow: hidden; resize: none; border: 0; outline: 0; background: transparent; font: 500 clamp(24px, 2.4vw, 32px)/1.43 Newsreader; }
 .window-body textarea::placeholder { color: color-mix(in srgb, var(--muted) 55%, transparent); }
 .output { min-height: 270px; flex: 1; color: var(--green); overflow-wrap: anywhere; white-space: pre-wrap; font: 500 clamp(24px, 2.4vw, 32px)/1.43 Newsreader; }
 .output.placeholder { color: color-mix(in srgb, var(--muted) 55%, transparent); font-style: italic; }
