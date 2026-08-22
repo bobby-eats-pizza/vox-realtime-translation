@@ -22,7 +22,7 @@ Most translation tools optimize for one quick conversion. Vox is designed for mu
 - **Visible language controls** — switch languages directly without opening dropdown menus.
 - **Privacy-minded** — uses Chrome's on-device Translator API when available.
 - **Broad fallback** — gracefully uses cloud translation when a local model is unavailable.
-- **Useful details** — language swapping, copy, speech playback, character counts, and dark mode.
+- **Useful details** — language swapping, input and translation speech playback, copy, character counts, and dark mode.
 - **No build step** — plain HTML, CSS, and JavaScript. Clone it and open it.
 
 ## Supported languages

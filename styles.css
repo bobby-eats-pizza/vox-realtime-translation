@@ -100,6 +100,7 @@ h2 { margin: 0; font: 500 clamp(32px, 3.7vw, 46px)/1 Newsreader; letter-spacing:
 .side-foot { min-height: 30px; display: flex; align-items: center; justify-content: space-between; color: var(--muted); font: 8px DM Mono; text-transform: uppercase; letter-spacing: .08em; }
 .live-label { display: flex; align-items: center; gap: 6px; }
 .live-label::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--green); }
+.input-actions { display: flex; align-items: center; gap: 8px; }
 .card-actions { display: flex; gap: 2px; }
 .icon-button { width: 30px; height: 30px; padding: 0; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; }
 .icon-button:hover:not(:disabled) { background: var(--soft); }

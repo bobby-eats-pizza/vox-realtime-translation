@@ -45,8 +45,8 @@ function createWindow(config, index) {
       </div>
     </div>
     <div class="window-body">
-      <div class="input-side"><span class="field-label">Original</span><textarea maxlength="500" aria-label="Workspace ${index + 1} text input" placeholder="Start writing…" spellcheck="true"></textarea><div class="side-foot"><span class="count">0 / 500</span><span class="live-label">Live</span></div></div>
-      <div class="output-side"><span class="field-label">Translation</span><div class="output placeholder" aria-live="polite">Your translation will appear here.</div><div class="side-foot"><span class="window-status">Ready</span><div class="card-actions"><button class="icon-button speak" type="button" aria-label="Listen to translation" title="Listen" disabled><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button><button class="icon-button copy" type="button" aria-label="Copy translation" title="Copy" disabled><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="1"/><path d="M16 8V5H5v11h3"/></svg></button></div></div></div>
+      <div class="input-side"><span class="field-label">Original</span><textarea maxlength="500" aria-label="Workspace ${index + 1} text input" placeholder="Start writing…" spellcheck="true"></textarea><div class="side-foot"><span class="count">0 / 500</span><div class="input-actions"><span class="live-label">Live</span><button class="icon-button speak-input" type="button" aria-label="Listen to original text" title="Listen to original" disabled><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button></div></div></div>
+      <div class="output-side"><span class="field-label">Translation</span><div class="output placeholder" aria-live="polite">Your translation will appear here.</div><div class="side-foot"><span class="window-status">Ready</span><div class="card-actions"><button class="icon-button speak-output" type="button" aria-label="Listen to translation" title="Listen to translation" disabled><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button><button class="icon-button copy" type="button" aria-label="Copy translation" title="Copy" disabled><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="1"/><path d="M16 8V5H5v11h3"/></svg></button></div></div></div>
     </div>
   </article>`;
 }
@@ -208,6 +208,7 @@ function showEmpty(translator) {
 function clearTranslator(translator) {
   translator.querySelector('textarea').value = '';
   translator.querySelector('.count').textContent = '0 / 500';
+  translator.querySelector('.speak-input').disabled = true;
   requestVersions.set(translator, (requestVersions.get(translator) || 0) + 1);
   showEmpty(translator);
 }
@@ -252,16 +253,22 @@ grid.addEventListener('click', async event => {
     queueTranslation(translator, 0);
   }
 
+  if (event.target.closest('.speak-input') && 'speechSynthesis' in window) {
+    const inputText = translator.querySelector('textarea').value.trim();
+    if (!inputText) return;
+    const selectedLanguage = getLanguage(translator, 'from');
+    const spokenLanguage = selectedLanguage === 'auto' ? await detectLanguage(inputText) : selectedLanguage;
+    speakText(inputText, languages[spokenLanguage].locale);
+    return;
+  }
+
   const outputText = translator.querySelector('.output').textContent;
   if (event.target.closest('.copy')) {
     try { await navigator.clipboard.writeText(outputText); showToast('Translation copied'); }
     catch { showToast('Copy unavailable'); }
   }
-  if (event.target.closest('.speak') && 'speechSynthesis' in window) {
-    speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(outputText);
-    utterance.lang = languages[getLanguage(translator, 'to')].locale;
-    speechSynthesis.speak(utterance);
+  if (event.target.closest('.speak-output') && 'speechSynthesis' in window) {
+    speakText(outputText, languages[getLanguage(translator, 'to')].locale);
   }
 });
 
@@ -269,6 +276,7 @@ grid.addEventListener('input', event => {
   if (!event.target.matches('textarea')) return;
   const translator = event.target.closest('.translator-window');
   translator.querySelector('.count').textContent = `${event.target.value.length} / 500`;
+  translator.querySelector('.speak-input').disabled = !event.target.value.trim();
   if (!event.target.value.trim()) showEmpty(translator);
   else queueTranslation(translator);
 });
@@ -312,6 +320,13 @@ function decodeHtml(value) {
   const element = document.createElement('textarea');
   element.innerHTML = value;
   return element.value;
+}
+
+function speakText(text, locale) {
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = locale;
+  speechSynthesis.speak(utterance);
 }
 
 const savedTheme = localStorage.getItem('vox-theme');
