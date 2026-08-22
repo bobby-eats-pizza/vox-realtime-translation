@@ -18,6 +18,7 @@ Most translation tools optimize for one quick conversion. Vox is designed for mu
 
 - **Four independent tabs** — each workspace preserves its own source, target, input, and result.
 - **Live translation** — results update shortly after you stop typing.
+- **Automatic language detection** — identify Chinese, English, Spanish, or French as you type.
 - **Privacy-minded** — uses Chrome's on-device Translator API when available.
 - **Broad fallback** — gracefully uses cloud translation when a local model is unavailable.
 - **Useful details** — language swapping, copy, speech playback, character counts, and dark mode.
