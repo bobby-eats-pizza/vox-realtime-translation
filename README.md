@@ -20,6 +20,7 @@ Most translation tools optimize for one quick conversion. Vox is designed for mu
 - **Live translation** — results update shortly after you stop typing.
 - **Automatic language detection** — identify Chinese, English, Spanish, or French as you type.
 - **Visible language controls** — switch languages directly without opening dropdown menus.
+- **Shareable persistent URLs** — refresh or share a link without losing tab, language-pair, or input state.
 - **Privacy-minded** — uses Chrome's on-device Translator API when available.
 - **Broad fallback** — gracefully uses cloud translation when a local model is unavailable.
 - **Useful details** — language swapping, input and translation speech playback, copy, character counts, and dark mode.
@@ -85,6 +86,8 @@ Small, focused contributions are welcome. Fork the repository, create a feature 
 ## Privacy and accuracy
 
 When the browser-native model is active, translation happens on the device. With the cloud fallback, text is sent to MyMemory for translation. Avoid entering sensitive information when using the fallback. Machine translation can miss tone, idiom, and context; use a fluent reviewer for consequential text.
+
+Workspace text and language choices are also encoded in the page URL so they survive refreshes and can be shared. Avoid sharing a Vox URL if its input contains private information.
 
 ## License
 

@@ -5,12 +5,22 @@ const languages = {
   fr: { code: 'FRA', name: 'French', locale: 'fr-FR' }
 };
 
-const starters = [
+const defaultWorkspaces = [
   { from: 'auto', to: 'zh' },
   { from: 'auto', to: 'en' },
   { from: 'auto', to: 'es' },
   { from: 'auto', to: 'fr' }
 ];
+
+const initialParams = new URLSearchParams(location.search);
+const validSources = new Set(['auto', ...Object.keys(languages)]);
+const validTargets = new Set(Object.keys(languages));
+const starters = defaultWorkspaces.map((defaults, index) => ({
+  from: validSources.has(initialParams.get(`from${index + 1}`)) ? initialParams.get(`from${index + 1}`) : defaults.from,
+  to: validTargets.has(initialParams.get(`to${index + 1}`)) ? initialParams.get(`to${index + 1}`) : defaults.to,
+  text: (initialParams.get(`text${index + 1}`) || '').slice(0, 500)
+}));
+const initialTab = Math.min(3, Math.max(0, Number(initialParams.get('tab')) || 0));
 
 const grid = document.querySelector('.translation-grid');
 const toast = document.querySelector('.toast');
@@ -20,6 +30,7 @@ const debounceTimers = new WeakMap();
 const requestVersions = new WeakMap();
 const translatorCache = new Map();
 let detectorPromise;
+let urlSyncTimer;
 
 function languageCode(id) {
   return id === 'auto' ? 'AUTO' : languages[id].code;
@@ -45,7 +56,7 @@ function createWindow(config, index) {
       </div>
     </div>
     <div class="window-body">
-      <div class="input-side"><span class="field-label">Original</span><textarea maxlength="500" aria-label="Workspace ${index + 1} text input" placeholder="Start writing…" spellcheck="true"></textarea><div class="side-foot"><span class="count">0 / 500</span><div class="input-actions"><span class="live-label">Live</span><button class="icon-button speak-input" type="button" aria-label="Listen to original text" title="Listen to original" disabled><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button></div></div></div>
+      <div class="input-side"><span class="field-label">Original</span><textarea maxlength="500" aria-label="Workspace ${index + 1} text input" placeholder="Start writing…" spellcheck="true">${escapeHtml(config.text)}</textarea><div class="side-foot"><span class="count">${config.text.length} / 500</span><div class="input-actions"><span class="live-label">Live</span><button class="icon-button speak-input" type="button" aria-label="Listen to original text" title="Listen to original" ${config.text ? '' : 'disabled'}><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button></div></div></div>
       <div class="output-side"><span class="field-label">Translation</span><div class="output placeholder" aria-live="polite">Your translation will appear here.</div><div class="side-foot"><span class="window-status">Ready</span><div class="card-actions"><button class="icon-button speak-output" type="button" aria-label="Listen to translation" title="Listen to translation" disabled><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 5a4 4 0 0 1 0 4m2.5-6.5a7 7 0 0 1 0 9"/></svg></button><button class="icon-button copy" type="button" aria-label="Copy translation" title="Copy" disabled><svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="1"/><path d="M16 8V5H5v11h3"/></svg></button></div></div></div>
     </div>
   </article>`;
@@ -78,6 +89,28 @@ function activateTab(index, focus = true) {
     panel.hidden = panelIndex !== index;
   });
   if (focus) grid.querySelector(`[data-tab="${index}"]`).focus();
+  scheduleUrlSync();
+}
+
+function scheduleUrlSync() {
+  clearTimeout(urlSyncTimer);
+  urlSyncTimer = setTimeout(syncUrl, 180);
+}
+
+function syncUrl() {
+  const params = new URLSearchParams();
+  const activeTab = grid.querySelector('.workspace-tab.active');
+  params.set('tab', activeTab?.dataset.tab || '0');
+  grid.querySelectorAll('.translator-window').forEach((translator, index) => {
+    params.set(`from${index + 1}`, getLanguage(translator, 'from'));
+    params.set(`to${index + 1}`, getLanguage(translator, 'to'));
+    const text = translator.querySelector('textarea').value;
+    if (text) params.set(`text${index + 1}`, text);
+  });
+  const url = new URL(location.href);
+  url.search = params.toString();
+  url.hash = '';
+  history.replaceState(null, '', url);
 }
 
 function updateTabLabel(translator) {
@@ -211,6 +244,7 @@ function clearTranslator(translator) {
   translator.querySelector('.speak-input').disabled = true;
   requestVersions.set(translator, (requestVersions.get(translator) || 0) + 1);
   showEmpty(translator);
+  scheduleUrlSync();
 }
 
 function showToast(message) {
@@ -231,6 +265,7 @@ grid.addEventListener('click', async event => {
     setLanguage(translator, languageOption.dataset.side, languageOption.dataset.language);
     updateTabLabel(translator);
     queueTranslation(translator, 0);
+    scheduleUrlSync();
     return;
   }
   if (event.target.closest('.clear-one')) {
@@ -251,6 +286,7 @@ grid.addEventListener('click', async event => {
     }
     showEmpty(translator);
     queueTranslation(translator, 0);
+    scheduleUrlSync();
   }
 
   if (event.target.closest('.speak-input') && 'speechSynthesis' in window) {
@@ -277,6 +313,7 @@ grid.addEventListener('input', event => {
   const translator = event.target.closest('.translator-window');
   translator.querySelector('.count').textContent = `${event.target.value.length} / 500`;
   translator.querySelector('.speak-input').disabled = !event.target.value.trim();
+  scheduleUrlSync();
   if (!event.target.value.trim()) showEmpty(translator);
   else queueTranslation(translator);
 });
@@ -293,6 +330,7 @@ grid.addEventListener('keydown', event => {
     updateTabLabel(translator);
     next.focus();
     queueTranslation(translator, 0);
+    scheduleUrlSync();
     return;
   }
   if (!event.target.matches('.workspace-tab')) return;
@@ -322,6 +360,12 @@ function decodeHtml(value) {
   return element.value;
 }
 
+function escapeHtml(value) {
+  const element = document.createElement('div');
+  element.textContent = value;
+  return element.innerHTML;
+}
+
 function speakText(text, locale) {
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
@@ -333,3 +377,7 @@ const savedTheme = localStorage.getItem('vox-theme');
 const preferredTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 applyTheme(savedTheme || preferredTheme);
 grid.innerHTML = createTabs() + `<div class="tab-panels">${starters.map(createWindow).join('')}</div>`;
+activateTab(initialTab, false);
+grid.querySelectorAll('.translator-window').forEach((translator, index) => {
+  if (starters[index].text) queueTranslation(translator, 300 + index * 120);
+});
